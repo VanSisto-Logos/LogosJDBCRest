@@ -20,6 +20,13 @@ public class RestUtil {
                 jb.append(line);
         } catch (Exception e) { /*report an error*/ }
 
+
+
         return gson.fromJson(jb.toString(), clazz);
+    }
+
+    public static <T> String getJsonFromObject(T t){
+        Gson gson = new Gson();
+        return gson.toJson(t);
     }
 }
