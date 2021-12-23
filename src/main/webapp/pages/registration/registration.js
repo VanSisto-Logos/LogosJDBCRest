@@ -32,7 +32,7 @@ registerButton.addEventListener("click", e => {
         body: JSON.stringify(user)
     })
         .then(res => {
-            if (res.status === 200) document.location.href = "../login/index.html";
+            if (res.status === 201) document.location.href = "../login/index.html";
             return res;
         })
 
