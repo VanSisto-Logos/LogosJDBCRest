@@ -27,12 +27,12 @@ registerButton.addEventListener("click", e => {
         lastName: lastNameE
     }
 
-    fetch('http://localhost:8080/user', {
+    fetch('http://localhost:8080/registration', {
         method: 'POST',
         body: JSON.stringify(user)
     })
         .then(res => {
-            if (res.status === 200) document.location.href = "../login/login.html";
+            if (res.status === 200) document.location.href = "../login/index.html";
             return res;
         })
 

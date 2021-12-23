@@ -13,7 +13,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,33 +59,103 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getById(int id) {
-        return null;
+        User user = null;
+
+        try (
+                Connection connection = MySQLConnector.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(Querries.GET_USER_BY_ID);
+        ) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next())
+                user = User.builder()
+                            .id(resultSet.getInt("id"))
+                            .firstName(resultSet.getString("first_name"))
+                            .lastName(resultSet.getString("last_name"))
+                            .email(resultSet.getString("email"))
+                            .password(resultSet.getString("password"))
+                            .role(Role.valueOf(resultSet.getString("role")))
+                        .build();
+
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return user;
     }
 
     @Override
     public List<User> getAll() {
-        return null;
+        List<User> users = new ArrayList<>();
+
+        try (
+                Connection connection = MySQLConnector.getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(Querries.GET_ALL_USERS);
+                ){
+
+            while (resultSet.next()){
+                users.add(User.builder()
+                        .id(resultSet.getInt("id"))
+                        .firstName(resultSet.getString("first_name"))
+                        .lastName(resultSet.getString("last_name"))
+                        .email(resultSet.getString("email"))
+                        .password(resultSet.getString("password"))
+                        .role(Role.valueOf(resultSet.getString("role")))
+                .build());
+            }
+
+
+        } catch (SQLException e) {
+            log.error(e);
+        }
+
+        return users;
     }
 
     @Override
     public void deleteById(int id) {
+        getById(id);
 
+        try (
+                Connection connection = MySQLConnector.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(Querries.DELETE_USER_BY_ID)
+                ) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            log.error(e);
+        }
     }
 
     @Override
     public void update(User user) {
+        try (
+                Connection connection = MySQLConnector.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(Querries.UPDATE_USER_BY_ID)
+                ) {
 
+            preparedStatement.setString(1, user.getFirstName());
+            preparedStatement.setString(2, user.getLastName());
+            preparedStatement.setString(3, user.getEmail());
+            preparedStatement.setString(4, user.getRole().name());
+            preparedStatement.setInt(5, user.getId());
+
+            preparedStatement.execute();
+
+        } catch (SQLException e) {
+            log.error(e);
+        }
     }
 
     @SneakyThrows
     @Override
     public User getByEmail(String email) {
-        String SQL = "SELECT * FROM user WHERE email LIKE ?";
         User user = null;
 
         try (
                 Connection connection = MySQLConnector.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+                PreparedStatement preparedStatement = connection.prepareStatement(Querries.GET_USER_BY_EMAIL);
                 ) {
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();

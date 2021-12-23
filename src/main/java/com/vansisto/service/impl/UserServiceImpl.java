@@ -30,17 +30,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAll() {
-        return null;
+        return dao.getAll();
     }
 
     @Override
     public void deleteById(int id) {
-
+        dao.deleteById(id);
     }
 
     @Override
     public void update(User user) {
-
+        dao.update(user);
     }
 
     @SneakyThrows

@@ -21,8 +21,15 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = RestUtil.getFromJson(req, User.class);
         User userFromDB = service.getByEmailAndPassword(user.getEmail(), user.getPassword());
+        User userInSession = User.builder()
+                        .id(userFromDB.getId())
+                        .firstName(userFromDB.getFirstName())
+                        .lastName(userFromDB.getLastName())
+                        .email(userFromDB.getEmail())
+                        .role(userFromDB.getRole())
+                .build();
 
         HttpSession session = req.getSession();
-        session.setAttribute("role", userFromDB.getRole());
+        session.setAttribute("user", userInSession);
     }
 }
