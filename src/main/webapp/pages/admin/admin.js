@@ -1,4 +1,5 @@
-let logoutButton = document.getElementById("logout");
+let loginButton = document.getElementById("login");
+let usernameElement = document.getElementById("username");
 
 let user = {};
 document.addEventListener('DOMContentLoaded', e => {
@@ -17,6 +18,8 @@ document.addEventListener('DOMContentLoaded', e => {
 
 function update(){
     if (user.role !== "ADMIN") window.location.href = "../../index.html"
+    loginButton.innerText = Logout;
+    usernameElement.innerText = user.firstName;
     getAllUsers();
 }
 
@@ -49,7 +52,7 @@ function getAllUsers() {
 
 }
 
-logoutButton.addEventListener('click', e => {
+loginButton.addEventListener('click', e => {
     fetch('http://localhost:8080/logout')
         .then(res => {
             if (res.status === 200) window.location.href = "../../index.html"

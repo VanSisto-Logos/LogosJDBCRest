@@ -14,7 +14,7 @@ function update() {
         let forAdmin = document.getElementById("forAdminButton");
 
         let adminPanelElement = document.createElement("a");
-        adminPanelElement.setAttribute("href", "pages/admin/index.html")
+        adminPanelElement.setAttribute("href", "pages/admin/admin.html")
         adminPanelElement.innerText = "Admin panel";
 
         forAdmin.appendChild(adminPanelElement);
@@ -24,5 +24,5 @@ function update() {
 document
     .getElementById("login")
     .addEventListener('click', e => {
-        window.location.href = "pages/login/index.html"
+        window.location.href = "pages/login/login.html"
 })

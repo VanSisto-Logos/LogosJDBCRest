@@ -1,6 +1,7 @@
 package com.vansisto.dao.impl;
 
 import com.vansisto.dao.BucketProductDao;
+import com.vansisto.model.Bucket;
 import com.vansisto.model.BucketProduct;
 import com.vansisto.util.MySQLConnector;
 import com.vansisto.util.Querries;
@@ -15,7 +16,7 @@ import java.util.Objects;
 @Log4j
 public class BucketProductDaoImpl implements BucketProductDao {
     @Override
-    public void create(BucketProduct bucketProduct) {
+    public BucketProduct create(BucketProduct bucketProduct) {
         boolean withId = bucketProduct.getId() != 0;
         final String SQL = withId ? Querries.CREATE_BUCKET_PRODUCT : Querries.CREATE_BUCKET_PRODUCT_WITHOUT_ID;
 
@@ -34,6 +35,9 @@ public class BucketProductDaoImpl implements BucketProductDao {
         } catch (SQLException e) {
             log.error(e);
         }
+
+//        TODO:
+        return null;
     }
 
     @Override
@@ -54,5 +58,10 @@ public class BucketProductDaoImpl implements BucketProductDao {
     @Override
     public void update(BucketProduct bucketProduct) {
 
+    }
+
+    @Override
+    public boolean isExist(int id) {
+        return false;
     }
 }

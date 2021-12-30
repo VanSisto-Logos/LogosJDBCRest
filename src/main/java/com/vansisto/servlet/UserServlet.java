@@ -4,7 +4,6 @@ import com.vansisto.model.User;
 import com.vansisto.service.UserService;
 import com.vansisto.service.impl.UserServiceImpl;
 import com.vansisto.util.RestUtil;
-import com.vansisto.util.Role;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

@@ -1,31 +1,39 @@
 package com.vansisto.service.impl;
 
+import com.vansisto.dao.BucketDao;
 import com.vansisto.dao.UserDao;
+import com.vansisto.dao.impl.BucketDaoImpl;
 import com.vansisto.dao.impl.UserDaoImpl;
 import com.vansisto.exception.PasswordsDontMatchException;
-import com.vansisto.exception.UserNotFoundException;
+import com.vansisto.model.Bucket;
 import com.vansisto.model.User;
 import com.vansisto.service.UserService;
 import com.vansisto.util.Role;
 import lombok.SneakyThrows;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 public class UserServiceImpl implements UserService {
     private UserDao dao = new UserDaoImpl();
+    private BucketDao bucketDao = new BucketDaoImpl();
 
     @Override
-    public void create(User user) {
-        if (Objects.isNull(user.getRole())){
+    public User create(User user) {
+        Role receivedRole = user.getRole();
+        if (Objects.isNull(receivedRole)){
             user.setRole(Role.USER);
         }
-        dao.create(user);
+        User createdUser = dao.create(user);
+        bucketDao.create(new Bucket(createdUser.getId(), LocalDateTime.now()));
+
+        return createdUser;
     }
 
     @Override
     public User getById(int id) {
-        return null;
+        return dao.getById(id);
     }
 
     @Override
@@ -35,12 +43,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(int id) {
+        bucketDao.deleteById(id);
         dao.deleteById(id);
     }
 
     @Override
     public void update(User user) {
         dao.update(user);
+    }
+
+    @Override
+    public boolean isExist(int id) {
+        return dao.isExist(id);
     }
 
     @SneakyThrows

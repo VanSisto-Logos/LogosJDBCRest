@@ -14,15 +14,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Log4j
 public class UserDaoImpl implements UserDao {
     @Override
-    public void create(User user) {
+    public User create(User user) {
         boolean withId = user.getId() != 0;
         final String SQL = withId ? Querries.CREATE_USER : Querries.CREATE_USER_WITHOUT_ID;
 
@@ -38,10 +36,13 @@ public class UserDaoImpl implements UserDao {
             statement.setString(5, user.getRole().name());
             if (withId) statement.setInt(6, user.getId());
 
+
             statement.execute();
         } catch (SQLException e) {
             log.error(e);
         }
+
+        return getByEmail(user.getEmail());
     }
 
 //    public static void main(String[] args) {
@@ -57,10 +58,9 @@ public class UserDaoImpl implements UserDao {
 //        );
 //    }
 
+    @SneakyThrows
     @Override
     public User getById(int id) {
-        User user = null;
-
         try (
                 Connection connection = MySQLConnector.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(Querries.GET_USER_BY_ID);
@@ -68,20 +68,13 @@ public class UserDaoImpl implements UserDao {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next())
-                user = User.builder()
-                            .id(resultSet.getInt("id"))
-                            .firstName(resultSet.getString("first_name"))
-                            .lastName(resultSet.getString("last_name"))
-                            .email(resultSet.getString("email"))
-                            .password(resultSet.getString("password"))
-                            .role(Role.valueOf(resultSet.getString("role")))
-                        .build();
+            if (!resultSet.next()) throw new UserNotFoundException(id);
+            return getUserFromResultSet(resultSet);
 
         } catch (SQLException e) {
             log.error(e);
         }
-        return user;
+        return null;
     }
 
     @Override
@@ -95,14 +88,7 @@ public class UserDaoImpl implements UserDao {
                 ){
 
             while (resultSet.next()){
-                users.add(User.builder()
-                        .id(resultSet.getInt("id"))
-                        .firstName(resultSet.getString("first_name"))
-                        .lastName(resultSet.getString("last_name"))
-                        .email(resultSet.getString("email"))
-                        .password(resultSet.getString("password"))
-                        .role(Role.valueOf(resultSet.getString("role")))
-                .build());
+                users.add(getUserFromResultSet(resultSet));
             }
 
 
@@ -113,9 +99,10 @@ public class UserDaoImpl implements UserDao {
         return users;
     }
 
+    @SneakyThrows
     @Override
     public void deleteById(int id) {
-        getById(id);
+        if (!isExist(id)) throw new UserNotFoundException(id);
 
         try (
                 Connection connection = MySQLConnector.getConnection();
@@ -148,11 +135,27 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    @Override
+    public boolean isExist(int id) {
+        try (
+                Connection connection = MySQLConnector.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM user WHERE id = ?");
+                ) {
+
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+
+        } catch (SQLException e ) {
+            log.error(e);
+        }
+        return false;
+    }
+
     @SneakyThrows
     @Override
     public User getByEmail(String email) {
-        User user = null;
-
         try (
                 Connection connection = MySQLConnector.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(Querries.GET_USER_BY_EMAIL);
@@ -160,18 +163,23 @@ public class UserDaoImpl implements UserDao {
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()) user = User.builder()
-                    .id(resultSet.getInt("id"))
-                    .firstName(resultSet.getString("first_name"))
-                    .lastName(resultSet.getString("last_name"))
-                    .password(resultSet.getString("password"))
-                    .role(Role.valueOf(resultSet.getString("role")))
-            .build();
+            if (!resultSet.next()) throw new UserNotFoundException(email);
+            return getUserFromResultSet(resultSet);
 
         } catch (SQLException e) {
             log.error(e);
         }
-        if (Objects.isNull(user)) throw new UserNotFoundException(email);
-        else return user;
+        return null;
+    }
+
+    private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
+        return User.builder()
+                        .id(resultSet.getInt("id"))
+                        .firstName(resultSet.getString("first_name"))
+                        .lastName(resultSet.getString("last_name"))
+                        .email(resultSet.getString("email"))
+                        .password(resultSet.getString("password"))
+                        .role(Role.valueOf(resultSet.getString("role")))
+                    .build();
     }
 }

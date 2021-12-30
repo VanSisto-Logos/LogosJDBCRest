@@ -20,4 +20,5 @@ public class Querries {
 //    BUCKET_PRODUCT
     public static String CREATE_BUCKET_PRODUCT = "INSERT INTO bucket_product (bucket_id, product_id, number, id) VALUES (?, ?, ?, ?)";
     public static String CREATE_BUCKET_PRODUCT_WITHOUT_ID = "INSERT INTO bucket_product (bucket_id, product_id, number) VALUES (?, ?, ?)";
+    public static String DELETE_BUCKET_BY_ID = "DELETE FROM bucket WHERE id = ?";
 }

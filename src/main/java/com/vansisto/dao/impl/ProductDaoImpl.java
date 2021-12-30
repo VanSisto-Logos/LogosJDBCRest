@@ -14,7 +14,7 @@ import java.util.List;
 @Log4j
 public class ProductDaoImpl implements ProductDao {
     @Override
-    public void create(Product product) {
+    public Product create(Product product) {
         boolean withId = product.getId() != 0;
         final String SQL = withId ? Querries.CREATE_PRODUCT : Querries.CREATE_PRODUCT_WITHOUT_ID;
 
@@ -32,6 +32,9 @@ public class ProductDaoImpl implements ProductDao {
         } catch (SQLException e) {
             log.error(e);
         }
+
+//        TODO:
+        return null;
     }
 
     @Override
@@ -52,5 +55,10 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public void update(Product product) {
 
+    }
+
+    @Override
+    public boolean isExist(int id) {
+        return false;
     }
 }
