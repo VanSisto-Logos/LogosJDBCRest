@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', e => {
     fetch('http://localhost:8080/auth')
         .then(resp => {
             if (resp.status === 401 || resp.status === 403)
-                window.location.href = "../../index.html";
+                window.location.href = "/index.html";
 
                 return resp.json();
         })
@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', e => {
 })
 
 function update(){
-    if (user.role !== "ADMIN") window.location.href = "../../index.html"
-    loginButton.innerText = Logout;
+    if (user.role !== "ADMIN") window.location.href = "/index.html"
+    loginButton.innerText = "Logout";
     usernameElement.innerText = user.firstName;
     getAllUsers();
 }
@@ -55,7 +55,7 @@ function getAllUsers() {
 loginButton.addEventListener('click', e => {
     fetch('http://localhost:8080/logout')
         .then(res => {
-            if (res.status === 200) window.location.href = "../../index.html"
+            if (res.status === 200) window.location.href = "/index.html"
         })
 })
 
