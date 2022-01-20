@@ -1,88 +1,54 @@
 package com.vansisto.dao.impl;
 
 import com.vansisto.dao.BucketDao;
-import com.vansisto.exception.BucketNotFoundException;
-import com.vansisto.exception.UserNotFoundException;
 import com.vansisto.model.Bucket;
-import com.vansisto.util.MySQLConnector;
-import com.vansisto.util.Querries;
+import com.vansisto.util.HibernateUtil;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
+import org.hibernate.Session;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 
 @Log4j
 public class BucketDaoImpl implements BucketDao {
+    private Session session = HibernateUtil.getSession();
+
     @Override
     public Bucket create(Bucket bucket) {
-        try (
-                Connection connection = MySQLConnector.getConnection();
-                PreparedStatement statement = connection.prepareStatement(Querries.CREATE_BUCKET)
-                ) {
-
-            statement.setTimestamp(1, Timestamp.valueOf(bucket.getCreatedDate()));
-            statement.setInt(2, bucket.getId());
-
-            statement.execute();
-        } catch (SQLException e) {
-            log.error(e);
-        }
-
-//        TODO:
-        return null;
+        session.beginTransaction();
+        session.persist(bucket);
+        session.getTransaction().commit();
+        return bucket;
     }
 
     @Override
     public Bucket getById(int id) {
-        return null;
+        return session.get(Bucket.class, id);
     }
 
     @Override
     public List<Bucket> getAll() {
-        return null;
+        return session.createCriteria(Bucket.class).list();
     }
 
     @SneakyThrows
     @Override
     public void deleteById(int id) {
-        if (!isExist(id)) throw new BucketNotFoundException(id);
-
-        try (
-                Connection connection = MySQLConnector.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(Querries.DELETE_BUCKET_BY_ID)
-        ) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.execute();
-        } catch (SQLException e) {
-            log.error(e);
-        }
+        session.beginTransaction();
+        session.delete(getById(id));
+        session.getTransaction().commit();
     }
 
     @Override
     public void update(Bucket bucket) {
-
+        session.beginTransaction();
+        session.merge(bucket);
+        session.getTransaction().commit();
     }
 
     @Override
     public boolean isExist(int id) {
-        try (
-                Connection connection = MySQLConnector.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM bucket WHERE id = ?");
-        ) {
-
-            preparedStatement.setInt(1, id);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next();
-
-        } catch (SQLException e ) {
-            log.error(e);
-        }
-        return false;
+        return !Objects.isNull(getById(id));
     }
 }

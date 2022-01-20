@@ -18,16 +18,8 @@ O
 src/main/webapp/WEB-INF/web.xml,2/e/2e22b6edd746fa3dc40ad7276c87c8d87d72a392
 [
 +src/main/java/com/vansisto/dao/UserDao.java,2/4/246cc6a26ee896074c38773c27a069b341c4fe4b
-W
-'src/main/java/com/vansisto/dao/Dao.java,c/2/c27240fd823577bbf8febd5c5d34d92fd8cd751e
 m
 =src/main/java/com/vansisto/dao/impl/BucketProductDaoImpl.java,f/0/f0fea20178af768d07ae4193f8e52c4fff08a80f
-g
-7src/main/java/com/vansisto/dao/impl/ProductDaoImpl.java,d/6/d63455656b5ffad20edad26050323a7c4a934da9
-\
-,src/main/java/com/vansisto/model/Bucket.java,3/5/350f8c53674734ebd585c9cc35c9312eccd65c06
-7
-pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec
 c
 3src/main/java/com/vansisto/service/UserService.java,b/b/bb73c7de5e7a55362a90569342204ca23fffa2bd
 c
@@ -40,10 +32,6 @@ o
 ?src/main/java/com/vansisto/exception/UserNotFoundException.java,3/d/3d1b0449e5b0cfd6425e4cbc390514a0a4b7ed93
 q
 Asrc/main/java/com/vansisto/exception/BucketNotFoundException.java,a/1/a1645a37976b385b74f47561e7cad5fe58549a28
-]
--src/main/java/com/vansisto/util/Querries.java,4/2/42836a2cdc5b740bcbe8e53dc68d1b0ca593784a
-f
-6src/main/java/com/vansisto/dao/impl/BucketDaoImpl.java,6/8/685887de9adf9c28090b413da9b08c1e77700fbd
 a
 1src/main/java/com/vansisto/filter/UserFilter.java,b/e/befde993837c0ff73d3e1c3f37f2ca9d254e12fd
 k
