@@ -39,7 +39,9 @@ public class Bucket {
     @ManyToMany(
             cascade = {
                     CascadeType.PERSIST,
-                    CascadeType.MERGE
+                    CascadeType.MERGE,
+                    CascadeType.DETACH,
+                    CascadeType.REFRESH
             },
             fetch = FetchType.LAZY
     )

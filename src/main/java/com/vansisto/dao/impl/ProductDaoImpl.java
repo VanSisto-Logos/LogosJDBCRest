@@ -123,30 +123,45 @@ public class ProductDaoImpl implements ProductDao {
 //        dao.create(product2);
 //    }
 
+//    public static void main(String[] args) {
+//        BucketDao bucketDao = new BucketDaoImpl();
+//        Bucket bucket1 = bucketDao.getById(1);
+//        Bucket bucket2 = bucketDao.getById(3);
+//
+//        Product product1 = new Product("MTM Prod 1", "", new BigDecimal(11));
+//        Product product2 = new Product("MTM Prod 2", "", new BigDecimal(11));
+//        Product product3 = new Product("MTM Prod 3", "", new BigDecimal(11));
+//        Product product4 = new Product("MTM Prod 4", "", new BigDecimal(11));
+//
+//        bucket1.getProducts().add(product1);
+//        bucket1.getProducts().add(product2);
+//        bucket1.getProducts().add(product3);
+//
+//        bucket2.getProducts().add(product3);
+//        bucket2.getProducts().add(product4);
+//        bucket2.getProducts().add(product1);
+//
+//
+//        Session session = HibernateUtil.getSession();
+//        session.beginTransaction();
+//
+//        session.merge(bucket1);
+//        session.merge(bucket2);
+//        session.getTransaction().commit();
+//    }
+
     public static void main(String[] args) {
         BucketDao bucketDao = new BucketDaoImpl();
         Bucket bucket1 = bucketDao.getById(1);
-        Bucket bucket2 = bucketDao.getById(3);
 
         Product product1 = new Product("MTM Prod 1", "", new BigDecimal(11));
         Product product2 = new Product("MTM Prod 2", "", new BigDecimal(11));
         Product product3 = new Product("MTM Prod 3", "", new BigDecimal(11));
-        Product product4 = new Product("MTM Prod 4", "", new BigDecimal(11));
 
         bucket1.getProducts().add(product1);
         bucket1.getProducts().add(product2);
         bucket1.getProducts().add(product3);
 
-        bucket2.getProducts().add(product3);
-        bucket2.getProducts().add(product4);
-        bucket2.getProducts().add(product1);
-
-
-        Session session = HibernateUtil.getSession();
-        session.beginTransaction();
-
-        session.merge(bucket1);
-        session.merge(bucket2);
-        session.getTransaction().commit();
+        bucketDao.update(bucket1);
     }
 }
