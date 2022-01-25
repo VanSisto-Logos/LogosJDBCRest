@@ -7,9 +7,14 @@ import com.vansisto.model.Product;
 import com.vansisto.util.HibernateUtil;
 import com.vansisto.util.MySQLConnector;
 import com.vansisto.util.Querries;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.log4j.Log4j;
 import org.hibernate.Session;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -150,18 +155,29 @@ public class ProductDaoImpl implements ProductDao {
 //        session.getTransaction().commit();
 //    }
 
-    public static void main(String[] args) {
-        BucketDao bucketDao = new BucketDaoImpl();
-        Bucket bucket1 = bucketDao.getById(1);
+//    public static void main(String[] args) {
+//        BucketDao bucketDao = new BucketDaoImpl();
+//        Bucket bucket1 = bucketDao.getById(1);
+//
+//        Product product1 = new Product("MTM Prod 1", "", new BigDecimal(11));
+//        Product product2 = new Product("MTM Prod 2", "", new BigDecimal(11));
+//        Product product3 = new Product("MTM Prod 3", "", new BigDecimal(11));
+//
+//        bucket1.getProducts().add(product1);
+//        bucket1.getProducts().add(product2);
+//        bucket1.getProducts().add(product3);
+//
+//        bucketDao.update(bucket1);
+//    }
 
-        Product product1 = new Product("MTM Prod 1", "", new BigDecimal(11));
-        Product product2 = new Product("MTM Prod 2", "", new BigDecimal(11));
-        Product product3 = new Product("MTM Prod 3", "", new BigDecimal(11));
+    @Override
+    public Product getProductByName(String name) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Product> query = builder.createQuery(Product.class);
+        Root<Product> root = query.from(Product.class);
+        query.select(root);
+        query.where( builder.equal( root.get( "name" ), name ) );
 
-        bucket1.getProducts().add(product1);
-        bucket1.getProducts().add(product2);
-        bucket1.getProducts().add(product3);
-
-        bucketDao.update(bucket1);
+        return session.createQuery(query).getSingleResult();
     }
 }
